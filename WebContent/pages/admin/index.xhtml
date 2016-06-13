@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html">
+    
+    <ui:decorate template="/pages/default/main_layout.xhtml">
+    	<ui:define name="dynamic_content">
+    		<div id="index_content">
+    			<h3>Bem vindo!</h3>
+    			<div class="ui-grid">
+    				<div class="ui-grid-row">
+    					<div class="ui-grid-col-3">
+    					<h:form id="form_content_menu">
+				    		<p:menu>
+					    		<p:submenu label="Alocação">	
+					    			<p:menuitem ajax="false" action="#{allocationManagedBean.startAllocationProcess()}" update="ship_number"><i class="fa fa-cogs"/> Alocar Bolsas</p:menuitem>
+					    			<p:menuitem url="#"><i class="fa fa-sort-amount-desc"/> Bolsas Alocadas</p:menuitem>
+					    		</p:submenu>
+					    		<p:submenu label="Gerenciador">
+					    			<p:menuitem url="#"><i class="fa fa-pencil-square"/> Cadastrar</p:menuitem>
+					    		</p:submenu>
+				    			<p:separator/>
+				    			<p:menuitem ajax="false" action="#{userManagedBean.onClickLogout()}"><i class="fa fa-sign-out"/> Sair</p:menuitem>
+				    		</p:menu>
+				    	</h:form>
+			    		</div>
+			    		<div class="ui-grid-col-9">
+			    			<p:messages id="messages" autoUpdate="true" showDetail="true"/>
+			    			<p:outputLabel id="ship_number">Bolsas Disponíveis: #{allocationManagedBean.shipNumber.amount}</p:outputLabel>
+			    		</div>
+		    		</div>
+	    		</div>
+    		</div>
+    	</ui:define>
+    </ui:decorate>
+</html>

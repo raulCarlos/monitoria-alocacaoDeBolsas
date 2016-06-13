@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html">
+    
+    <ui:decorate template="/pages/default/main_layout.xhtml">
+    	<ui:define name="dynamic_content">
+    	<p:messages id="messages" globalOnly="true" autoUpdate="true" showDetail="true"/>	
+    		<center>
+				<div id="form_content">
+			   		<h:form id="form">
+			   			<h:panelGrid columns="2">
+			   				<p:outputLabel value="Usuário" for="inputUsuario"/>
+			   				<p:inputText id="inputUsuario" value="#{userManagedBean.user.username}" required="true"/>
+			   				<p:outputLabel value="Senha" for="inputSenha"/>
+			   				<p:inputText id="inputSenha" type="password" value="#{userManagedBean.user.password}" required="true"/>
+			   				<p:message for="inputSenha"/>
+			   				<p:commandButton id="btLogar" value="Entrar" ajax="false" action="#{userManagedBean.onClickLogin()}" icon="ui-icon-check"/>
+			   			</h:panelGrid>
+			   		</h:form>
+				</div>
+	    	</center>
+   		</ui:define>
+	</ui:decorate>
+</html>

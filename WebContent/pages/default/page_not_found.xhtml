@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html">
+    
+    <ui:decorate template="/pages/default/main_layout.xhtml">
+    	<ui:define name="dynamic_content">
+    		<br/><br/>
+    		<h2>Página não encontrada</h2>
+    		<br/>
+    		<h:form id="form_content">
+	    		<p:commandLink action="#{userManagedBean.onClickRedirect()}" ajax="false"> 
+	    			Clique aqui para voltar ao sistema.
+	    		</p:commandLink>
+    		</h:form>
+    	</ui:define>
+    </ui:decorate>
+</html>

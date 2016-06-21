@@ -54,5 +54,20 @@
   		<version>6.0</version>
   		<scope>provided</scope>
   	</dependency>
+  	<dependency>
+  		<groupId>org.hsqldb</groupId>
+  		<artifactId>hsqldb</artifactId>
+  		<version>2.3.2</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.derby</groupId>
+  		<artifactId>derbytools</artifactId>
+  		<version>10.8.2.2</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.apache.derby</groupId>
+  		<artifactId>derby</artifactId>
+  		<version>10.8.2.2</version>
+  	</dependency>
   </dependencies>
 </project>

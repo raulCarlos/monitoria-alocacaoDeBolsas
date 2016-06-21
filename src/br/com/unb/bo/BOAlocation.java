@@ -1,88 +1,108 @@
 package br.com.unb.bo;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import br.com.unb.dao.DAODepartament;
 import br.com.unb.dao.DAOOffer;
-import br.com.unb.dao.DAOScholarShipNumber;
+import br.com.unb.dao.DAOScholarShip;
 import br.com.unb.entity.ComparatorOffer;
+import br.com.unb.entity.Departament;
 import br.com.unb.entity.Offer;
-import br.com.unb.entity.ScholarShipNumber;
+import br.com.unb.entity.ScholarShip;
+import br.com.unb.exception.EmptyListException;
 
 public class BOAlocation {
 
 	DAOOffer daoOffer = new DAOOffer();
-	DAOScholarShipNumber daoSSN = new DAOScholarShipNumber();
+	DAOScholarShip daoSSN = new DAOScholarShip();
+	DAODepartament daoDep = new DAODepartament();
 	
-	public ScholarShipNumber getShipNumberAmount(){
-		return daoSSN.getSSNumber(30);
+	public ScholarShip getShipNumberAmount(Departament dep) throws SQLException{
+		return daoSSN.getScholarShipByDepartment(dep);
 	}
 	
-	public int startAllocation(){
-		List<Offer> list = daoOffer.getAllOffers();
-		ScholarShipNumber ship = daoSSN.getSSNumber(30);
-		
-		Iterator<Offer> it = list.iterator();
-		List<Offer> listAllocOffer = new ArrayList<Offer>();
-		
-		List<Offer> listOfferRest = new ArrayList<Offer>();
-		for(int i = ship.getAmount(); i > 0; i--){
-			Offer off = new Offer();
-			while(it.hasNext()){
-				off = it.next();
-				if(off.getIsMandatory() && off.getStudentsAmount() > 0){
-					off.setScholarShip(1);
-					int qtd = ship.getAmount() - 1;
-					ship.setAmount(qtd);
-					listAllocOffer.add(off);
-				}else{
-					listOfferRest.add(off);
-				}
-			}
-		}	
-		
+	public List<ScholarShip> getAllScholatShip() throws SQLException, EmptyListException{
+		List<ScholarShip> list = daoSSN.getAllScholarShip();
+		if(!list.isEmpty()){
+			return list;
+		}
+		throw new EmptyListException("Não há bolsas cadastradas!");
+	}
 	
-		
-		if(ship.getAmount() > 0){
+	
+	public void startAllocation() throws SQLException{
+		List<Departament> listDep = daoDep.getDepartamentList();
+		for(Departament dep : listDep){
+			//Seleção de lista de ofertas por departamento e de bolsas disponíveis por departamento
+			List<Offer> listOff =  daoOffer.getOfferByDepartment(dep);
+			ScholarShip ship = daoSSN.getScholarShipByDepartment(dep);
+			
+			//Ordenação da lista de ofertas por maior número de alunos cadastrados
 			Comparator<Offer> cres = new ComparatorOffer();
 			Comparator<Offer> desc = Collections.reverseOrder(cres);
-			Collections.sort(listOfferRest, desc);
+			Collections.sort(listOff, desc);
 			
-			System.out.println("Primeira Alocação");
-			for(int j = 0; j < listOfferRest.size(); j++){
-				System.out.println("ID: " + listOfferRest.get(j).getId());
-				System.out.println("QTD Estudantes: " + listOfferRest.get(j).getStudentsAmount());
-				System.out.println("--------------------------------------------------------");
+			int numberShip = ship.getAmount();
+			Offer off;
+
+			while(scholarShipAndStudentsDiffVerify(listOff) && numberShip > 0){
+				int cont = 0;
+				while(numberShip > 0 && cont < listOff.size()){
+					off = listOff.remove(cont);
+					
+					int shipDif = off.getStudentsAmount() - off.getScholarShip();
+					
+					if(off.getIsMandatory() && shipDif > 0){
+						off.setScholarShip(off.getScholarShip() + 1);
+						numberShip = numberShip - 1;
+						listOff.add(cont, off);
+					}else{
+						listOff.add(cont, off);
+					}
+					cont++;
+				}
+				
+				if(numberShip > 0){
+					cont = 0;
+					while(numberShip > 0 && cont < listOff.size()){
+						off =listOff.remove(cont);
+						
+						int shipDif = off.getStudentsAmount() - off.getScholarShip();
+						
+						if(!off.getIsMandatory() && shipDif > 0){
+							off.setScholarShip(off.getScholarShip() + 1);
+							numberShip = numberShip - 1;
+							listOff.add(cont, off);
+						}else{
+							listOff.add(cont, off);
+						}
+						cont++;
+					}
+				}
 			}
 			
+			ship.setAmount(numberShip);
+			daoSSN.updateScholarShipByDepartament(ship, dep);
 			
-			
-			Offer off = new Offer();
-			int cont = 0;
-			for(int x = ship.getAmount(); x > 0; x--){
-				off = listOfferRest.get(cont);
-				if(off.getStudentsAmount() > 0){
-					off.setScholarShip(1);
-					int qtd = ship.getAmount() - 1;
-					ship.setAmount(qtd);
-					listAllocOffer.add(off);
-				}
-				cont++;
-			}
-			System.out.println("Segunda Alocação");
-			for(int y = 0; y < listOfferRest.size(); y++){
-				if(listOfferRest.get(y).getScholarShip() == 0){
-					System.out.println("ID: " + listOfferRest.get(y).getId());
-					System.out.println("QTD Estudantes: " + listOfferRest.get(y).getStudentsAmount());
-					System.out.println("--------------------------------------------------------");
-				}
+			Iterator<Offer> it = listOff.iterator();
+			while(it.hasNext()){
+				off = it.next();
+				daoOffer.updateOffer(off);
 			}
 		}
-		
-		return ship.getAmount();
 	}
 	
+	private boolean scholarShipAndStudentsDiffVerify(List<Offer> list){
+		for(Offer off : list){
+			int shipDif = off.getStudentsAmount() - off.getScholarShip();
+			if(shipDif > 0){
+				return true;
+			}
+		}
+		return false;
+	}
 }

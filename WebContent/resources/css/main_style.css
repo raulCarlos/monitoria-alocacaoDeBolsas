@@ -33,7 +33,7 @@ html, body{
 
 #middle{
 	margin: 10px 20px 30px 20px;
-	padding-bottom: 30px;
+	padding-bottom: 50px;
 }
 
 #footer{
@@ -56,6 +56,6 @@ html, body{
 
 /*------------------------------------------------------- Index Page ------------------------------------------------------------*/
 
-#index_contet{
-	
+.animated .ui-progressbar-value { 
+	background-image: url("/showcase/javax.faces.resource/demo/images/pbar-ani.gif.xhtml"); 
 }

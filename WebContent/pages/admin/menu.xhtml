@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+    <h:form id="form_content_menu">
+		<p:menu>
+			<p:submenu label="Alocação">	
+				<p:menuitem ajax="false" action="#{allocationManagedBean.startAllocationProcess()}">
+					<i class="fa fa-cogs"/> Alocar Bolsas
+				</p:menuitem>
+				<p:menuitem ajax="false" url="#{userManagedBean.onClickOfferPage()}">
+					<i class="fa fa-sort-amount-desc"/> Bolsas Alocadas
+				</p:menuitem>
+			</p:submenu>
+			<p:submenu label="Gerenciador">
+				<p:menuitem url="#"><i class="fa fa-pencil-square"/> Cadastrar</p:menuitem>
+			</p:submenu>
+			<p:separator/>
+			<p:menuitem ajax="false" action="#{userManagedBean.onClickRedirect()}"><i class="fa fa-home"/> Home</p:menuitem>
+			<p:menuitem ajax="false" action="#{userManagedBean.onClickLogout()}"><i class="fa fa-sign-out"/> Sair</p:menuitem>
+		</p:menu>
+	</h:form>
+
+</ui:composition>

@@ -9,7 +9,9 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import br.com.unb.constant.Page;
 import br.com.unb.entity.User;
+import br.com.unb.utils.PagesMap;
 import br.com.unb.utils.PasswordEncryptor;
 import br.com.unb.utils.ReturnMessage;
 
@@ -18,8 +20,6 @@ import br.com.unb.utils.ReturnMessage;
 public class UserManagedBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	private static final String INDEX_PAGE  = "/pages/admin/index.xhtml";
-	private static final String LOGOUT_PAGE = "/pages/login.xhtml";
 	private User user;
 
 	@PostConstruct
@@ -31,7 +31,7 @@ public class UserManagedBean implements Serializable{
 		try {
 			HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 			req.login(this.user.getUsername(),  PasswordEncryptor.encrypt(user.getPassword()));
-			return INDEX_PAGE;
+			return PagesMap.getInstance().getMessage().get(Page.INDEX_PAGE);
 		} catch (ServletException e) {
 			ReturnMessage.setMessage("Erro ao logar: ", e.getMessage(), "error");
 		} finally{
@@ -45,7 +45,8 @@ public class UserManagedBean implements Serializable{
 		try {
 			HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 			req.logout();
-			return LOGOUT_PAGE;
+			
+			return PagesMap.getInstance().getMessage().get(Page.LOGOUT_PAGE);
 		} catch (ServletException e) {
 			e.printStackTrace();
 		}
@@ -53,7 +54,11 @@ public class UserManagedBean implements Serializable{
 	}
 
 	public String onClickRedirect(){
-		return INDEX_PAGE;
+		return PagesMap.getInstance().getMessage().get(Page.INDEX_PAGE);
+	}
+	
+	public String onClickOfferPage(){
+		return PagesMap.getInstance().getMessage().get(Page.OFFER_PAGE);
 	}
 	
 	public User getUser() {

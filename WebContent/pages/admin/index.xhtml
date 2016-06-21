@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:p="http://primefaces.org/ui"
     xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:h="http://java.sun.com/jsf/html">
+    xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
     
     <ui:decorate template="/pages/default/main_layout.xhtml">
     	<ui:define name="dynamic_content">
@@ -12,27 +13,36 @@
     			<div class="ui-grid">
     				<div class="ui-grid-row">
     					<div class="ui-grid-col-3">
-    					<h:form id="form_content_menu">
-				    		<p:menu>
-					    		<p:submenu label="Alocação">	
-					    			<p:menuitem ajax="false" action="#{allocationManagedBean.startAllocationProcess()}" update="ship_number"><i class="fa fa-cogs"/> Alocar Bolsas</p:menuitem>
-					    			<p:menuitem url="#"><i class="fa fa-sort-amount-desc"/> Bolsas Alocadas</p:menuitem>
-					    		</p:submenu>
-					    		<p:submenu label="Gerenciador">
-					    			<p:menuitem url="#"><i class="fa fa-pencil-square"/> Cadastrar</p:menuitem>
-					    		</p:submenu>
-				    			<p:separator/>
-				    			<p:menuitem ajax="false" action="#{userManagedBean.onClickLogout()}"><i class="fa fa-sign-out"/> Sair</p:menuitem>
-				    		</p:menu>
-				    	</h:form>
+    						<ui:include src="/pages/admin/menu.xhtml"/>
 			    		</div>
 			    		<div class="ui-grid-col-9">
 			    			<p:messages id="messages" autoUpdate="true" showDetail="true"/>
-			    			<p:outputLabel id="ship_number">Bolsas Disponíveis: #{allocationManagedBean.shipNumber.amount}</p:outputLabel>
+			  				<br/>
+			  				<p:dataList value="#{allocationManagedBean.listShip}" var="ship"  type="ordered">
+			  					<f:facet name="header">Bolsas disponíveis</f:facet>
+			  					#{ship.departament.nameDepartament}, #{ship.amount}
+			  				</p:dataList>
+			  				<br/>
+			    			<p:progressBar id="progressBarAlloc" widgetVar="pbAllocation" style="width:100%"/>
 			    		</div>
 		    		</div>
 	    		</div>
     		</div>
+    		<script type="text/javascript">
+				function start() {
+				    window['progress'] = setInterval(function() {
+				        var pbAllocation = PF('pbAllocation'),
+				        oldValue = pbAllocation.getValue(),
+				        newValue = oldValue + 10;
+				 
+				        pbAllocation.setValue(pbAllocation.getValue() + 10);
+				 
+				        if(newValue === 100) {
+				            clearInterval(window['progress']);
+				        }
+				    }, 1000);
+				}
+			</script>
     	</ui:define>
     </ui:decorate>
 </html>
